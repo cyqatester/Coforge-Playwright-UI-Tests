@@ -1,0 +1,94 @@
+name: Coforge Playwright UI Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dev:
+    name: UI tests - DEV
+    runs-on: ubuntu-latest
+    environment: dev
+    env:
+      TEST_ENV: dev
+      BASE_URL_DEV: ${{ vars.BASE_URL || 'https://www.coforge.com/' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:dev
+      - name: Upload DEV test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-dev-results
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  qa:
+    name: UI tests - QA
+    runs-on: ubuntu-latest
+    environment: qa
+    needs: dev
+    env:
+      TEST_ENV: qa
+      BASE_URL_QA: ${{ vars.BASE_URL || 'https://www.coforge.com/' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:qa
+      - name: Upload QA test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-qa-results
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  prod:
+    name: UI tests - PROD
+    runs-on: ubuntu-latest
+    environment: prod
+    needs: qa
+    env:
+      TEST_ENV: prod
+      BASE_URL_PROD: ${{ vars.BASE_URL || 'https://www.coforge.com/' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:prod
+      - name: Upload PROD test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-prod-results
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14
