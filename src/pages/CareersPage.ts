@@ -19,21 +19,6 @@ export class CareersPage extends BasePage {
 
   }
 
-
-  async acceptCookiesIfPresent(): Promise<void> {
-    // Cookie consent may appear as a modal/banner after arriving from the
-    // Careers navigation. If it does, accept it; otherwise continue normally.
-    const allowAllButton = this.page.getByRole('button', { name: 'Allow all' });
-
-    try {
-      await allowAllButton.waitFor({ state: 'visible', timeout: 3_000 });
-      await allowAllButton.click();
-      await expect(allowAllButton).toBeHidden({ timeout: 10_000 });
-    } catch {
-      // No consent prompt appeared (or it was already handled); do not block TC3.
-    }
-  }
-
   async searchForKeyword(keyword: string): Promise<void> {
     await expect(this.itJobOpeningsHeading).toBeVisible();
     await this.itJobOpeningsHeading.scrollIntoViewIfNeeded();

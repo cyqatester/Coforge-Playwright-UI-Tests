@@ -1,16 +1,17 @@
-import { test } from '@playwright/test';
-import { HomePage } from '../src/pages/HomePage';
+import { test } from '../src/fixtures/test-fixtures';
 
 test.describe('Coforge home page', () => {
-  test('main page loads', async ({ page }) => {
-    const home = new HomePage(page);
-    await home.goto();
-    await home.expectMainPageLoaded();
+  test('main page loads', async ({ homePage, commonPage }) => {
+    await homePage.goto();
+    await homePage.expectMainPageLoaded();
   });
 
-  test('top navigation displays Investors, Careers, and About Us', async ({ page }) => {
-    const home = new HomePage(page);
-    await home.goto();
-    await home.expectTopNavigationVisible();
+  test('top navigation displays Investors, Careers, and About Us', async ({ homePage, commonPage }) => {
+    await homePage.goto();
+    await commonPage.acceptCookiesIfPresent();
+    await homePage.expectTopNavigationVisible();
   });
 });
+
+
+

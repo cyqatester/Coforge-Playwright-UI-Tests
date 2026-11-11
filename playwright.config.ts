@@ -33,6 +33,9 @@ export default defineConfig({
     navigationTimeout: 30_000,
     headless: true, //set to true before committing to github
     channel: 'chromium',
+    launchOptions: {
+      args: ['--disable-http2'],
+    },
   },
   projects: [
     {
