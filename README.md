@@ -64,7 +64,7 @@ The project automates key user interface interactions on the Coforge corporate w
 | `home.spec.ts` | Verify Investors, Careers, and About Us navigation links. |
 | `careers.spec.ts` | Search IT job openings and open the first Senior Test Engineer result. |
 
-<img width="959" height="260" alt="image" src="https://github.com/user-attachments/assets/1042224e-a24d-4186-b0b2-a7c8152971be" 
+<img width="959" height="260" alt="image" src="https://github.com/user-attachments/assets/1042224e-a24d-4186-b0b2-a7c8152971be"> 
 
 **Note:** Careers job listings are dynamic and may change. The Careers test expects a Senior Test Engineer result to be available after searching for `test`.
 
