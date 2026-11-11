@@ -1,3 +1,4 @@
+
 name: Coforge Playwright UI Tests
 
 on:
@@ -10,85 +11,122 @@ permissions:
   contents: read
 
 jobs:
+
   dev:
     name: UI tests - DEV
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: dev
+
     env:
       TEST_ENV: dev
       BASE_URL_DEV: ${{ vars.BASE_URL || 'https://www.coforge.com/' }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
-      - run: npm install
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:dev
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run DEV tests
+        run: npm run test:dev
+
       - name: Upload DEV test artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-dev-results
           path: |
             playwright-report/
             test-results/
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 7
 
   qa:
     name: UI tests - QA
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: qa
     needs: dev
+
     env:
       TEST_ENV: qa
       BASE_URL_QA: ${{ vars.BASE_URL || 'https://www.coforge.com/' }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
-      - run: npm install
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:qa
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run QA tests
+        run: npm run test:qa
+
       - name: Upload QA test artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-qa-results
           path: |
             playwright-report/
             test-results/
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 7
 
   prod:
     name: UI tests - PROD
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: prod
     needs: qa
+
     env:
       TEST_ENV: prod
       BASE_URL_PROD: ${{ vars.BASE_URL || 'https://www.coforge.com/' }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
-      - run: npm install
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:prod
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run PROD tests
+        run: npm run test:prod
+
       - name: Upload PROD test artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-prod-results
           path: |
             playwright-report/
             test-results/
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 7
