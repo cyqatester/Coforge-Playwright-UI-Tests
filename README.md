@@ -1,5 +1,7 @@
 # Coforge Playwright UI Tests
 
+https://github.com/user-attachments/assets/5ac9a271-9d94-48b4-a669-b2705a1ee869
+
 A Playwright + TypeScript UI test project for [coforge.com](https://www.coforge.com/), using the Page Object Model (POM).
 
 ## Included coverage
@@ -9,6 +11,8 @@ A Playwright + TypeScript UI test project for [coforge.com](https://www.coforge.
 3. From the home page, open **Careers**; if a cookie consent prompt appears, click **Allow all**; then scroll to **IT job openings**, search for `test`, and click the first visible **Senior Test Engineer** result.
 
 The careers area is served from `careers.coforge.com`. The job listing is live content and can change; the third test intentionally fails if the expected job title is no longer returned.
+
+<img width="959" height="260" alt="image" src="https://github.com/user-attachments/assets/1042224e-a24d-4186-b0b2-a7c8152971be" />
 
 ## Requirements
 
@@ -52,6 +56,8 @@ It defines three distinct jobs:
 - **dev** runs first.
 - **qa** runs only after DEV succeeds.
 - **prod** runs only after QA succeeds.
+
+<img width="949" height="248" alt="image" src="https://github.com/user-attachments/assets/75f9699c-7373-457b-8345-fd903abb7e47" />
 
 Each job installs dependencies and Chromium, runs its corresponding npm script, and uploads the Playwright HTML report and test results even when tests fail.
 
