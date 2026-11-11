@@ -1,100 +1,355 @@
-# Coforge Playwright UI Tests
+# Coforge Playwright UI Automation Tests
 
 https://github.com/user-attachments/assets/5ac9a271-9d94-48b4-a669-b2705a1ee869
 
-A Playwright + TypeScript UI test project for [coforge.com](https://www.coforge.com/), using the Page Object Model (POM).
+A UI automation testing project for [Coforge](https://www.coforge.com/), built using **Playwright, TypeScript, and the Page Object Model (POM)** design pattern.
 
-## Included coverage
+The project automates key user interface interactions on the Coforge corporate website, including homepage validation, navigation verification, and Careers page job searching.
 
-1. Main Coforge page loads.
-2. Top navigation links **Investors**, **Careers**, and **About Us** are visible.
-3. From the home page, open **Careers**; if a cookie consent prompt appears, click **Allow all**; then scroll to **IT job openings**, search for `test`, and click the first visible **Senior Test Engineer** result.
+## 1. Technologies
 
-The careers area is served from `careers.coforge.com`. The job listing is live content and can change; the third test intentionally fails if the expected job title is no longer returned.
+| Technology | Purpose |
+|---|---|
+| Playwright | Browser automation and UI testing |
+| TypeScript | Programming language |
+| Node.js | JavaScript runtime |
+| Page Object Model (POM) | Test architecture and maintainability |
+| Playwright Fixtures | Page object initialization and dependency management |
+| GitHub Actions | CI/CD automation |
+| Chromium | Browser execution |
 
-<img width="959" height="260" alt="image" src="https://github.com/user-attachments/assets/1042224e-a24d-4186-b0b2-a7c8152971be" />
+## 2. Features
 
-## Requirements
+- **Homepage Validation**
+  - Verify that the Coforge homepage loads successfully.
+  - Validate the page title.
+  - Verify that the main page content is visible.
 
-- Node.js 20+
-- npm
+- **Navigation Testing**
+  - Verify the visibility of Investors, Careers, and About Us navigation links.
+  - Navigate to the Careers website.
 
-## Install and run
+- **Careers Page Testing**
+  - Handle cookie consent when the prompt appears.
+  - Verify the IT Job Openings section.
+  - Search for job openings using a keyword.
+  - Search using the keyword `test`.
+  - Locate and open the first Senior Test Engineer result.
 
-```bash
-npm install
-npx playwright install --with-deps chromium
-npm test
-```
+- **Page Object Model (POM)**
+  - Separate page locators and interactions from test specifications.
+  - Reuse common page functionality.
+  - Improve test readability and maintainability.
 
-Run against one configured environment:
+- **Custom Playwright Fixtures**
+  - Initialize page objects automatically.
+  - Share common page objects across test specifications.
+  - Use Playwright's isolated browser page for each test.
 
-```bash
-npm run test:dev
-npm run test:qa
-npm run test:prod
-```
+- **Multi-Environment Execution**
+  - Support DEV, QA, and PROD configurations.
+  - Configure environment-specific base URLs.
 
-Set environment-specific URLs if DEV/QA/PROD are separate deployments:
+- **Automated CI/CD**
+  - Execute UI tests through GitHub Actions.
+  - Run DEV, QA, and PROD stages sequentially.
+  - Generate HTML and JUnit reports.
+  - Upload test reports and results as workflow artifacts.
 
-```bash
-# Linux/macOS
-TEST_ENV=qa BASE_URL_QA=https://qa.example.com npm test
+## 3. Test Coverage
 
-# Windows PowerShell
-$env:TEST_ENV="qa"; $env:BASE_URL_QA="https://qa.example.com"; npm test
-```
+| Test Specification | Test Scenario |
+|---|---|
+| `home.spec.ts` | Verify that the Coforge homepage loads. |
+| `home.spec.ts` | Verify Investors, Careers, and About Us navigation links. |
+| `careers.spec.ts` | Search IT job openings and open the first Senior Test Engineer result. |
 
-The default URLs point to the public Coforge website so the project runs without additional setup. In GitHub, configure repository/environment variable `BASE_URL` separately under the `dev`, `qa`, and `prod` GitHub Environments to override the URL for each job.
+<img width="959" height="260" alt="image" src="https://github.com/user-attachments/assets/1042224e-a24d-4186-b0b2-a7c8152971be" 
 
-## GitHub Actions
+**Note:** Careers job listings are dynamic and may change. The Careers test expects a Senior Test Engineer result to be available after searching for `test`.
 
-Workflow: `.github/workflows/playwright.yml`
-
-It defines three distinct jobs:
-
-- **dev** runs first.
-- **qa** runs only after DEV succeeds.
-- **prod** runs only after QA succeeds.
-
-<img width="949" height="248" alt="image" src="https://github.com/user-attachments/assets/75f9699c-7373-457b-8345-fd903abb7e47" />
-
-Each job installs dependencies and Chromium, runs its corresponding npm script, and uploads the Playwright HTML report and test results even when tests fail.
-
-Create GitHub Environments named `dev`, `qa`, and `prod`. Add a `BASE_URL` variable to each environment if they use different deployments. The workflow defaults to `https://www.coforge.com/` if the variable is not set.
-
-## Project structure
+## 4. Project Structure
 
 ```text
-coforge-playwright/
-├── .github/workflows/playwright.yml
-├── src/pages/
-│   ├── BasePage.ts
-│   ├── HomePage.ts
-│   └── CareersPage.ts
+Coforge-Playwright-UI-Tests/
+│
+├── .github/
+│   └── workflows/
+│       └── playwright.yml
+│
+├── src/
+│   ├── fixtures/
+│   │   └── test-fixtures.ts
+│   │
+│   └── pages/
+│       ├── BasePage.ts
+│       ├── CareersPage.ts
+│       ├── CommonPage.ts
+│       └── HomePage.ts
+│
 ├── tests/
-│   ├── home.spec.ts
-│   └── careers.spec.ts
+│   ├── careers.spec.ts
+│   └── home.spec.ts
+│
 ├── .env.example
 ├── .gitignore
 ├── package.json
+├── package-lock.json
 ├── playwright.config.ts
-└── tsconfig.json
+├── tsconfig.json
+└── README.md
 ```
 
-## POM design
+## 5. Page Object Model (POM) Design
 
-- `BasePage` contains shared page-level functionality.
-- `HomePage` owns home-page navigation and navigation to Careers.
-- `CareersPage` owns the IT job openings section, keyword search, and job-result interaction.
-- Spec files contain test intent and delegate page interactions to page objects.
+The project follows the Page Object Model design pattern to separate test scenarios from page interactions.
 
-## Selector maintenance
+### BasePage.ts
+- Provides shared functionality for page objects.
+- Contains reusable visibility validation methods.
 
-The tests use accessible roles, labels, and placeholders where possible. Coforge may update its navigation markup or careers search widget; if that happens, update the corresponding locators in `src/pages/` rather than placing selectors in the specs.
+### HomePage.ts
+- Handles Coforge homepage navigation.
+- Validates the homepage title and main content.
+- Verifies the Investors, Careers, and About Us links.
+- Provides navigation to the Careers website.
 
-## Notes
+### CareersPage.ts
+- Handles the IT Job Openings section.
+- Manages job keyword searches.
+- Locates and opens Senior Test Engineer search results.
 
-- The public site is used as the default target for all three jobs. DEV/QA/PROD are separate pipeline stages, not claims that Coforge exposes three separate public environments.
-- Avoid running production UI tests at high concurrency. This project uses a single Chromium project and two CI workers.
-- The test clicks the first matching job title; it does not submit an application.
+### CommonPage.ts
+- Handles common website interactions.
+- Checks for cookie consent prompts.
+- Accepts cookies when the Allow All button is available.
+
+### test-fixtures.ts
+- Creates reusable Playwright fixtures.
+- Initializes HomePage, CareersPage, and CommonPage objects.
+- Provides page objects directly to test specifications.
+
+This structure makes the tests easier to maintain, reuse, and extend.
+
+## 6. Environment Configuration
+
+The project supports three execution environments:
+
+- DEV
+- QA
+- PROD
+
+Environment-specific URLs are configured in `playwright.config.ts`.
+
+| Environment Variable | Description |
+|---|---|
+| `TEST_ENV` | Selects the execution environment. |
+| `BASE_URL_DEV` | DEV environment URL. |
+| `BASE_URL_QA` | QA environment URL. |
+| `BASE_URL_PROD` | PROD environment URL. |
+
+By default, all three environments point to:
+
+`https://www.coforge.com/`
+
+You can override these values when using separate deployments.
+
+The `.env.example` file provides a reference for the environment variables. The current project reads environment variables from the execution environment; it does not automatically load `.env` files.
+
+## 7. Running the Project Locally
+
+### Prerequisites
+
+- Node.js 20 or later
+- npm
+- Git
+
+### Step 1: Clone the repository
+
+```bash
+git clone <your-repository-url>
+```
+
+### Step 2: Navigate to the project directory
+
+```bash
+cd Coforge-Playwright-UI-Tests
+```
+
+### Step 3: Install dependencies
+
+```bash
+npm ci
+```
+
+### Step 4: Install Playwright Chromium
+
+```bash
+npx playwright install chromium
+```
+
+For Linux CI environments, install browser dependencies as well:
+
+```bash
+npx playwright install --with-deps chromium
+```
+
+### Step 5: Execute the tests
+
+Run all tests:
+
+```bash
+npm test
+```
+
+Run tests by environment:
+
+```bash
+npm run test:dev
+```
+
+```bash
+npm run test:qa
+```
+
+```bash
+npm run test:prod
+```
+
+Run tests with a visible browser:
+
+```bash
+npm run test:headed
+```
+
+### Step 6: View the HTML report
+
+```bash
+npm run report
+```
+
+Playwright generates reports in:
+
+```text
+playwright-report/
+```
+
+JUnit results are generated in:
+
+```text
+test-results/junit.xml
+```
+
+## 8. GitHub Actions CI/CD
+
+The project uses **GitHub Actions** to automate UI test execution.
+
+Workflow location:
+
+```text
+.github/workflows/playwright.yml
+```
+
+The workflow is triggered by:
+
+- Push to `main` or `master`.
+- Pull requests.
+- Manual execution using `workflow_dispatch`.
+
+### CI/CD Pipeline
+
+The pipeline consists of three sequential stages:
+
+**1. DEV Environment**
+- Checks out the repository.
+- Sets up Node.js 24.
+- Installs npm dependencies.
+- Installs Playwright Chromium.
+- Executes DEV UI tests.
+- Uploads test reports and results.
+
+**2. QA Environment**
+- Runs only after DEV succeeds.
+- Installs dependencies and Chromium.
+- Executes QA UI tests.
+- Uploads test reports and results.
+
+**3. PROD Environment**
+- Runs only after QA succeeds.
+- Installs dependencies and Chromium.
+- Executes PROD UI tests.
+- Uploads test reports and results.
+
+### Pipeline Execution
+
+```text
+       GitHub Actions
+              |
+              v
+       DEV UI Tests
+              |
+         Success?
+              |
+              v
+        QA UI Tests
+              |
+         Success?
+              |
+              v
+       PROD UI Tests
+              |
+              v
+       Upload Reports
+```
+<img width="949" height="248" alt="image" src="https://github.com/user-attachments/assets/75f9699c-7373-457b-8345-fd903abb7e47" />
+Each environment uses its own GitHub Actions Environment.
+
+Configure the following environments in your repository:
+
+- `dev`
+- `qa`
+- `prod`
+
+Within each GitHub Environment, configure a repository/environment variable named:
+
+`BASE_URL`
+
+The workflow maps this variable to the corresponding environment-specific URL.
+
+If no variable is configured, the workflow uses the public Coforge website as the default target.
+
+### Test Artifacts
+
+The workflow uploads the following artifacts:
+
+- Playwright HTML reports.
+- JUnit test results.
+- Test execution evidence generated by Playwright.
+
+Artifacts are uploaded even when tests fail, using `if: always()`.
+
+Artifact retention: 7 days.
+
+## 9. Test Reports and Execution Evidence
+
+Playwright is configured to capture:
+
+- Screenshots when tests fail.
+- Video recordings retained on failure.
+- Execution traces retained on failure.
+- HTML test reports.
+- JUnit XML reports.
+
+These reports help investigate failures and provide visibility into automated test execution.
+
+## 10. Important Notes
+
+- The project currently uses Chromium for browser execution.
+- DEV, QA, and PROD are separate CI/CD stages. They point to the public Coforge website by default unless configured with different deployment URLs.
+- The Careers job listings are dynamic and subject to change.
+- The automation validates job searching and opening a job result; it does not submit a job application.
+- Production UI tests should be executed responsibly to avoid unnecessary traffic.
+
+---
+
+**Project Focus:** Playwright UI Automation | TypeScript | Page Object Model | Fixtures | GitHub Actions CI/CD
