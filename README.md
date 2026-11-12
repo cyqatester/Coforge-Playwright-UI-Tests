@@ -1,6 +1,10 @@
 # Coforge Playwright UI Automation Tests
 
-https://github.com/user-attachments/assets/5ac9a271-9d94-48b4-a669-b2705a1ee869
+<p>
+<picture>
+  <img width="1280" height="720" alt="Coforge_Playwright_UI_Test" src="https://github.com/user-attachments/assets/9333dd66-1c97-4e19-89ff-f7a10131d644" />  
+</picture>
+</p>
 
 A UI automation testing project for [Coforge](https://www.coforge.com/), built using **Playwright, TypeScript, and the Page Object Model (POM)** design pattern.
 
